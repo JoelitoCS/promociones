@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+img{
+    width: 200px;
+    height: 200px;
+    
+}
+
+.imagenUser{
+    border: 1px solid;
+    border-radius: 100px;
+    background-color: white;
+    overflow: hidden;
+}
