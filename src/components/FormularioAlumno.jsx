@@ -1,18 +1,301 @@
-export function FormularioAlumno(){
-    return(
-        <div>
-            <h2>Formulario de Alumno</h2>
-            <form action="GET">
-                <input type="text" placeholder="Nombre" required/>
-                <input type="text" placeholder="Apellido" required/>
-                <input type="text" placeholder="Promocion" required/>
-                <select name="ciclo" id="ciclo">
-                    <option value="DAW">DAW</option>
-                    <option value="SMX">SMX</option>
-                    <option value="ARI">ARI</option>
-                    <option value="IEA">IEA</option>
-                </select>
-            </form>
+import { useState, useEffect } from 'react'
+
+/**
+ * Componente FormularioAlumno - Formulario para crear y editar alumnos
+ * 
+ * Características:
+ * - Modo CREAR: Añade un nuevo alumno
+ * - Modo EDITAR: Modifica un alumno existente
+ * - Validación de todos los campos
+ * - Diseño responsive
+ * 
+ * Props:
+ * @param {Object|null} alumno - Objeto con datos del alumno (null para crear, objeto para editar)
+ * @param {Function} onSubmit - Callback que se ejecuta al enviar el formulario
+ * @param {Function} onCancel - Callback que se ejecuta al cancelar
+ */
+export function FormularioAlumno({ alumno, onSubmit, onCancel }) {
+  // Estados del formulario
+  const [nombre, setNombre] = useState('')
+  const [apellido, setApellido] = useState('')
+  const [promocion, setPromocion] = useState('')
+  const [ciclo, setCiclo] = useState('DAW')
+  const [imagen, setImagen] = useState('')
+  const [errores, setErrores] = useState({})
+
+  // Opciones para los selectores
+  const promociones = ["24/25", "25/26", "26/27"]
+  const ciclos = ["DAW", "SMX", "ARI", "IEA"]
+
+  /**
+   * Efecto: Si hay un alumno (modo EDITAR), cargar sus datos en el formulario
+   */
+  useEffect(() => {
+    if (alumno) {
+      setNombre(alumno.nombre || '')
+      setApellido(alumno.apellido || '')
+      setPromocion(alumno.promocion || '')
+      setCiclo(alumno.ciclo || 'DAW')
+      setImagen(alumno.imagen || '')
+    }
+  }, [alumno])
+
+  /**
+   * Validar todos los campos del formulario
+   * @returns {Object} Objeto con los errores encontrados
+   */
+  const validarFormulario = () => {
+    const nuevosErrores = {}
+
+    if (!nombre.trim()) {
+      nuevosErrores.nombre = 'El nombre es obligatorio'
+    }
+
+    if (!apellido.trim()) {
+      nuevosErrores.apellido = 'Los apellidos son obligatorios'
+    }
+
+    if (!promocion) {
+      nuevosErrores.promocion = 'Debes seleccionar una promoción'
+    }
+
+    if (!ciclo) {
+      nuevosErrores.ciclo = 'Debes seleccionar un ciclo'
+    }
+
+    if (!imagen.trim()) {
+      nuevosErrores.imagen = 'La URL de la imagen es obligatoria'
+    } else if (!imagen.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)) {
+      nuevosErrores.imagen = 'La URL debe ser una imagen válida (jpg, jpeg, png, gif, webp)'
+    }
+
+    return nuevosErrores
+  }
+
+  /**
+   * Manejar el envío del formulario
+   */
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    // Validar el formulario
+    const nuevosErrores = validarFormulario()
+    
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrores(nuevosErrores)
+      return
+    }
+
+    // Preparar los datos del alumno
+    const alumnoData = {
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      promocion,
+      ciclo,
+      imagen: imagen.trim()
+    }
+
+    // Si estamos editando, incluir el ID
+    if (alumno) {
+      alumnoData.id = alumno.id
+    }
+
+    // Llamar al callback onSubmit
+    onSubmit(alumnoData)
+  }
+
+  /**
+   * Limpiar errores al cambiar un campo
+   */
+  const limpiarError = (campo) => {
+    if (errores[campo]) {
+      setErrores({ ...errores, [campo]: undefined })
+    }
+  }
+
+  return (
+    <div className="p-8">
+      {/* Header del formulario */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          {alumno ? 'Editar Alumno' : 'Añadir Nuevo Alumno'}
+        </h2>
+        <p className="text-gray-600">
+          {alumno 
+            ? 'Modifica los datos del alumno y guarda los cambios' 
+            : 'Completa todos los campos para añadir un nuevo alumno'
+          }
+        </p>
+      </div>
+
+      {/* Formulario */}
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-5">
+          {/* Campo: Nombre */}
+          <div>
+            <label htmlFor="nombre" className="block text-sm font-semibold text-gray-700 mb-2">
+              Nombre *
+            </label>
+            <input
+              id="nombre"
+              type="text"
+              placeholder="Ej: Juan"
+              value={nombre}
+              onChange={(e) => {
+                setNombre(e.target.value)
+                limpiarError('nombre')
+              }}
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                errores.nombre 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 focus:ring-blue-500'
+              }`}
+            />
+            {errores.nombre && (
+              <p className="mt-1 text-sm text-red-600">{errores.nombre}</p>
+            )}
+          </div>
+
+          {/* Campo: Apellidos */}
+          <div>
+            <label htmlFor="apellido" className="block text-sm font-semibold text-gray-700 mb-2">
+              Apellidos *
+            </label>
+            <input
+              id="apellido"
+              type="text"
+              placeholder="Ej: García López"
+              value={apellido}
+              onChange={(e) => {
+                setApellido(e.target.value)
+                limpiarError('apellido')
+              }}
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                errores.apellido 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 focus:ring-blue-500'
+              }`}
+            />
+            {errores.apellido && (
+              <p className="mt-1 text-sm text-red-600">{errores.apellido}</p>
+            )}
+          </div>
+
+          {/* Campo: Promoción */}
+          <div>
+            <label htmlFor="promocion" className="block text-sm font-semibold text-gray-700 mb-2">
+              Promoción *
+            </label>
+            <select
+              id="promocion"
+              value={promocion}
+              onChange={(e) => {
+                setPromocion(e.target.value)
+                limpiarError('promocion')
+              }}
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                errores.promocion 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 focus:ring-blue-500'
+              }`}
+            >
+              <option value="">Selecciona una promoción</option>
+              {promociones.map((promo) => (
+                <option key={promo} value={promo}>
+                  {promo}
+                </option>
+              ))}
+            </select>
+            {errores.promocion && (
+              <p className="mt-1 text-sm text-red-600">{errores.promocion}</p>
+            )}
+          </div>
+
+          {/* Campo: Ciclo */}
+          <div>
+            <label htmlFor="ciclo" className="block text-sm font-semibold text-gray-700 mb-2">
+              Ciclo Formativo *
+            </label>
+            <select
+              id="ciclo"
+              value={ciclo}
+              onChange={(e) => {
+                setCiclo(e.target.value)
+                limpiarError('ciclo')
+              }}
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                errores.ciclo 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 focus:ring-blue-500'
+              }`}
+            >
+              {ciclos.map((cicloOption) => (
+                <option key={cicloOption} value={cicloOption}>
+                  {cicloOption}
+                </option>
+              ))}
+            </select>
+            {errores.ciclo && (
+              <p className="mt-1 text-sm text-red-600">{errores.ciclo}</p>
+            )}
+          </div>
+
+          {/* Campo: URL de la imagen */}
+          <div>
+            <label htmlFor="imagen" className="block text-sm font-semibold text-gray-700 mb-2">
+              URL de la Imagen *
+            </label>
+            <input
+              id="imagen"
+              type="url"
+              placeholder="https://ejemplo.com/imagen.jpg"
+              value={imagen}
+              onChange={(e) => {
+                setImagen(e.target.value)
+                limpiarError('imagen')
+              }}
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                errores.imagen 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 focus:ring-blue-500'
+              }`}
+            />
+            {errores.imagen && (
+              <p className="mt-1 text-sm text-red-600">{errores.imagen}</p>
+            )}
+            {imagen && !errores.imagen && (
+              <div className="mt-3 p-2 border border-gray-200 rounded-lg bg-gray-50">
+                <p className="text-xs text-gray-600 mb-2">Vista previa:</p>
+                <img 
+                  src={imagen} 
+                  alt="Vista previa" 
+                  className="h-24 w-24 object-cover rounded-lg"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/150?text=Error'
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
-    )
+
+        {/* Botones de acción */}
+        <div className="flex gap-4 mt-8">
+          <button
+            type="submit"
+            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl"
+          >
+            {alumno ? 'Guardar Cambios' : 'Añadir Alumno'}
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg transition duration-300"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  )
 }

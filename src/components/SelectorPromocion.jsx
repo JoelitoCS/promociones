@@ -1,24 +1,19 @@
-export function SelectorPromocion({datosPromos, setPromocion}){
-    
-    console.log(datosPromos)
-
-    
-
-    return(
-        <>
-         
-            <select onChange={(e) => setPromocion(e.target.value)} name="selectPromo" id="selectPromo">
-                <option value="promo">Selecciona la promoción</option>
-                {datosPromos.map((p, index)=>(
-                        <option key={index} value={p}>Promocion: {p}</option>
-                    )
-
-                )
-                
-                }
-
-            </select>
-        </>
-
-    )
+/**
+ * Componente SelectorPromocion - Selector para filtrar por promoción
+ */
+export function SelectorPromocion({ datosPromos, promocion, setPromocion }) {
+  return (
+    <select
+      value={promocion}
+      onChange={(e) => setPromocion(e.target.value)}
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+    >
+      <option value="">Todas las promociones</option>
+      {datosPromos.map((promo) => (
+        <option key={promo} value={promo}>
+          {promo}
+        </option>
+      ))}
+    </select>
+  )
 }

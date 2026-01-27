@@ -1,31 +1,50 @@
-import { Alumno } from "./alumno";
-import { Avatar } from "./Avatar";
-import './estilo.css';
+import { Alumno } from './Alumno'
 
-export function ListaAlumnos({datosAlumno}){
-    console.log(datosAlumno)
-    return(
-        <>
-
-            {datosAlumno.map((a, indx)=>{
-
-                return(
-                    
-                   <div className="divPrincipal">
-                        <Alumno key={indx} nombre={a.nombre} apellido={a.apellido} grupo={a.grupo} promocion={a.promocion}>
-                            <Avatar imagen={a.imagen}/>
-                        </Alumno>
-                   </div> 
-                    
-                )
-
-            }
-
-                )
-                
-            }
-           
-        </>
+/**
+ * Componente ListaAlumnos - Renderiza la lista de alumnos
+ * 
+ * Características:
+ * - Muestra todos los alumnos en formato de cuadrícula
+ * - Pasa las props necesarias a cada componente Alumno
+ * - Muestra mensaje cuando no hay alumnos
+ * 
+ * Props:
+ * @param {Array} datosAlumno - Array de objetos con los datos de los alumnos
+ * @param {boolean} esAdmin - Indica si el usuario es administrador
+ * @param {Function} onEdit - Callback para editar un alumno
+ * @param {Function} onDelete - Callback para eliminar un alumno
+ */
+export function ListaAlumnos({ datosAlumno, esAdmin, onEdit, onDelete }) {
+  // Si no hay alumnos, mostrar mensaje
+  if (!datosAlumno || datosAlumno.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <h3 className="text-xl font-semibold text-gray-600 mb-2">No hay alumnos</h3>
+        <p className="text-gray-500">
+          {esAdmin 
+            ? 'Haz clic en "Añadir Alumno" para comenzar' 
+            : 'No se encontraron alumnos con los filtros seleccionados'
+          }
+        </p>
+      </div>
     )
+  }
 
+  // Renderizar la lista de alumnos
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {datosAlumno.map((alumno) => (
+        <Alumno
+          key={alumno.id}
+          alumno={alumno}
+          esAdmin={esAdmin}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      ))}
+    </div>
+  )
 }
