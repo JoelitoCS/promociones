@@ -9,10 +9,10 @@ import { useState, useEffect } from 'react'
  * - Validación de todos los campos
  * - Diseño responsive
  * 
- * Props:
- * @param {Object|null} alumno - Objeto con datos del alumno (null para crear, objeto para editar)
- * @param {Function} onSubmit - Callback que se ejecuta al enviar el formulario
- * @param {Function} onCancel - Callback que se ejecuta al cancelar
+ * Recibe como props un objeto alumno que puede ser nulo si estamos en modo crear,
+ * o un objeto con los datos del alumno si estamos en modo editar.
+ * También recibe una función onSubmit que se ejecuta al enviar el formulario,
+ * y una función onCancel que se ejecuta al cancelar.
  */
 export function FormularioAlumno({ alumno, onSubmit, onCancel }) {
   // Estados del formulario
@@ -41,8 +41,8 @@ export function FormularioAlumno({ alumno, onSubmit, onCancel }) {
   }, [alumno])
 
   /**
-   * Validar todos los campos del formulario
-   * @returns {Object} Objeto con los errores encontrados
+   * Valida todos los campos del formulario y devuelve un objeto
+   * con los mensajes de error correspondientes a cada campo que no haya superado la validación.
    */
   const validarFormulario = () => {
     const nuevosErrores = {}
@@ -63,17 +63,13 @@ export function FormularioAlumno({ alumno, onSubmit, onCancel }) {
       nuevosErrores.ciclo = 'Debes seleccionar un ciclo'
     }
 
-    if (!imagen.trim()) {
-      nuevosErrores.imagen = 'La URL de la imagen es obligatoria'
-    } else if (!imagen.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)) {
-      nuevosErrores.imagen = 'La URL debe ser una imagen válida (jpg, jpeg, png, gif, webp)'
-    }
-
     return nuevosErrores
   }
 
   /**
-   * Manejar el envío del formulario
+   * Maneja el envío del formulario. Primero valida los campos y, si todos son correctos,
+   * prepara el objeto con los datos del alumno y lo pasa al callback onSubmit.
+   * Si estamos en modo editar, también incluye el identificador del alumno en el objeto.
    */
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -105,7 +101,8 @@ export function FormularioAlumno({ alumno, onSubmit, onCancel }) {
   }
 
   /**
-   * Limpiar errores al cambiar un campo
+   * Recibe el nombre de un campo como argumento y, si ese campo tiene un error
+   * registrado actualmente, lo elimina del objeto de errores.
    */
   const limpiarError = (campo) => {
     if (errores[campo]) {

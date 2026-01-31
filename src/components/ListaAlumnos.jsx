@@ -1,22 +1,5 @@
-import { Alumno } from './Alumno'
-
-/**
- * Componente ListaAlumnos - Renderiza la lista de alumnos
- * 
- * Características:
- * - Muestra todos los alumnos en formato de cuadrícula
- * - Pasa las props necesarias a cada componente Alumno
- * - Muestra mensaje cuando no hay alumnos
- * 
- * Props:
- * @param {Array} datosAlumno - Array de objetos con los datos de los alumnos
- * @param {boolean} esAdmin - Indica si el usuario es administrador
- * @param {Function} onEdit - Callback para editar un alumno
- * @param {Function} onDelete - Callback para eliminar un alumno
- */
-export function ListaAlumnos({ datosAlumno, esAdmin, onEdit, onDelete }) {
-  // Si no hay alumnos, mostrar mensaje
-  if (!datosAlumno || datosAlumno.length === 0) {
+export function ListaAlumnos(props) {
+  if (!props.datosAlumno || props.datosAlumno.length === 0) {
     return (
       <div className="text-center py-12">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -24,7 +7,7 @@ export function ListaAlumnos({ datosAlumno, esAdmin, onEdit, onDelete }) {
         </svg>
         <h3 className="text-xl font-semibold text-gray-600 mb-2">No hay alumnos</h3>
         <p className="text-gray-500">
-          {esAdmin 
+          {props.esAdmin 
             ? 'Haz clic en "Añadir Alumno" para comenzar' 
             : 'No se encontraron alumnos con los filtros seleccionados'
           }
@@ -33,16 +16,15 @@ export function ListaAlumnos({ datosAlumno, esAdmin, onEdit, onDelete }) {
     )
   }
 
-  // Renderizar la lista de alumnos
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {datosAlumno.map((alumno) => (
+      {props.datosAlumno.map((alumno) => (
         <Alumno
           key={alumno.id}
           alumno={alumno}
-          esAdmin={esAdmin}
-          onEdit={onEdit}
-          onDelete={onDelete}
+          esAdmin={props.esAdmin}
+          onEdit={props.onEdit}
+          onDelete={props.onDelete}
         />
       ))}
     </div>

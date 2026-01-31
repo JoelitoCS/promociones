@@ -1,19 +1,13 @@
-/**
- * Componente InfoAdmin - Muestra información del usuario autenticado
- * 
- * VERSIÓN SIMPLIFICADA SIN DESESTRUCTURACIÓN DE PARÁMETROS
- */
-
-// OPCIÓN 1: Accediendo a props directamente
 export function InfoAdmin(props) {
   return (
     <div className="flex items-center justify-between">
       {/* Información del usuario */}
       <div className="flex items-center gap-4">
-        {/* Avatar */}
+        {/* Avatar, el interrogantet despues del [0], sirve para protegernos en caso de q el nombre este vacío */}
         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-lg">
-          {props.nombreUsuario.charAt(0).toUpperCase()}
+          {props.nombreUsuario[0]?.toUpperCase()}
         </div>
+
         
         {/* Nombre y rol */}
         <div>
@@ -58,36 +52,3 @@ export function InfoAdmin(props) {
   )
 }
 
-// ---------------------------------------------
-
-// OPCIÓN 2: Guardando props en variables dentro del componente
-/*
-export function InfoAdmin(props) {
-  const nombreUsuario = props.nombreUsuario
-  const esAdmin = props.esAdmin
-  const onLogout = props.onLogout
-  
-  return (
-    <div className="flex items-center justify-between">
-      // ... resto del código usando las variables locales
-      <p className="font-semibold text-gray-800 text-lg">
-        {nombreUsuario}
-      </p>
-      // ...
-    </div>
-  )
-}
-*/
-
-// ---------------------------------------------
-
-// OPCIÓN 3: La original con desestructuración (la más común en React)
-/*
-export function InfoAdmin({ nombreUsuario, esAdmin, onLogout }) {
-  return (
-    <div className="flex items-center justify-between">
-      // ... código usando directamente nombreUsuario, esAdmin, onLogout
-    </div>
-  )
-}
-*/

@@ -199,12 +199,12 @@ export default function App(){
 
       {/* Contenedor principal */}
       <div className="container mx-auto px-4 py-8">
-        {/* Sección de filtros */}
+        
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-5">🔍 Filtros de búsqueda</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Filtro por promoción */}
+            {/* Filtro por promocion */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 📅 Promoción: <span className="text-blue-700 font-bold">{promocion || "Todas"}</span>
@@ -230,7 +230,7 @@ export default function App(){
           </div>
         </div>
 
-        {/* Botón para añadir alumno (solo visible para admins) */}
+        {/* Botónnn para añadir alumno (solo visible para admins) */}
         {esAdmin && (
           <div className="mb-6 flex justify-end">
             <button
