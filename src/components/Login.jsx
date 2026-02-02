@@ -1,17 +1,6 @@
 import { useState } from 'react'
 
-/**
- * Componente Login - Gestiona la autenticación de usuarios
- * 
- * Características:
- * - Validación de credenciales
- * - Identificación de usuarios administradores
- * - Mensajes de error
- * - Diseño responsive con Tailwind CSS
- * 
- * Props:
- * @param {Function} onLogin - Callback que se ejecuta al hacer login exitoso
- */
+
 export default function Login({ onLogin }) {
   // Estados para el formulario
   const [usuario, setUsuario] = useState('')

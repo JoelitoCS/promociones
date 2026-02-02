@@ -119,7 +119,7 @@ export default function App(){
     localStorage.removeItem('authData')
   }
 
-  // --- FUNCIÓN CRUD: Crear alumno ---
+ 
   const crearAlumno = (nuevoAlumno) => {
     // Generar un ID único basado en timestamp
     const alumnoConId = {
@@ -130,9 +130,10 @@ export default function App(){
     setFormularioAbierto(false)
   }
 
-  // --- FUNCIÓN CRUD: Editar alumno ---
+  
   const editarAlumno = (alumnoEditado) => {
     setDatosAlumno(
+      //SI ALUMNO ID ES IGUAL AL EDITADO ENTONCES DAR ALUMNO EDITADO SI NO EL ALUMNO POR DEFECTO
       datosAlumno.map(alumno => 
         alumno.id === alumnoEditado.id ? alumnoEditado : alumno
       )
@@ -141,27 +142,28 @@ export default function App(){
     setAlumnoEditando(null)
   }
 
-  // --- FUNCIÓN CRUD: Eliminar alumno ---
+  
   const eliminarAlumno = (id) => {
+
     // Confirmación antes de eliminar
     if (window.confirm('¿Estás seguro de que quieres eliminar este alumno?')) {
       setDatosAlumno(datosAlumno.filter(alumno => alumno.id !== id))
     }
   }
 
-  // --- FUNCIÓN: Abrir formulario en modo CREAR ---
+ 
   const abrirFormularioCrear = () => {
     setAlumnoEditando(null)
     setFormularioAbierto(true)
   }
 
-  // --- FUNCIÓN: Abrir formulario en modo EDITAR ---
+ 
   const abrirFormularioEditar = (alumno) => {
     setAlumnoEditando(alumno)
     setFormularioAbierto(true)
   }
 
-  // --- FUNCIÓN: Cerrar formulario ---
+ 
   const cerrarFormulario = () => {
     setFormularioAbierto(false)
     setAlumnoEditando(null)
