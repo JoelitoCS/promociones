@@ -1,5 +1,5 @@
 
-const API_URL = 'https://backend-canojoel-d7ik.vercel.app/'; // Aqui ponemos el puerto q utilicemos, en mi caso utilizare el 3000
+const API_URL = 'https://backend-canojoel-d7ik.vercel.app'; // Aqui ponemos el puerto q utilicemos, en mi caso utilizare el 3000
 
 export const alumnosService = {
   // Obtener todos los alumnos
