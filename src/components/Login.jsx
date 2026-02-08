@@ -19,9 +19,9 @@ export default function Login({ onLogin }) {
     password: 'user123'
   }
 
-  /**
-   * Maneja el envio del formulario de login
-   */
+  
+  //Maneja el envio del formulario de login
+   
   const handleSubmit = (e) => {
     e.preventDefault() // Preveiene recarga de pagina
     

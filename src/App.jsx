@@ -228,7 +228,7 @@ export default function App(){
           <h2 className="text-2xl font-bold text-gray-900 mb-5 flex items-center gap-2">
             👥 Lista de Alumnos 
             <span className="bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
-              {datosFiltrados.length} // número de alumnos filtrados
+              {datosFiltrados.length} 
             </span>
           </h2>
           <ListaAlumnos 
