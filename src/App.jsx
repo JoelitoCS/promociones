@@ -89,6 +89,7 @@ export default function App(){
 
   //en este caso, como en mongo db no es id a secas, le ponesmos _id para que tenga el mismo formato y se pueda editar bien los alumnos
 
+  
   const editarAlumno = async (alumnoEditado) => {
     try {
       setError(null)
