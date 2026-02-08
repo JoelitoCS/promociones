@@ -1,178 +1,147 @@
-import './App.css'
-import { SelectorPromocion } from './components/SelectorPromocion'
-import { ListaAlumnos } from './components/ListaAlumnos'
-import { useState, useEffect } from 'react'
-import { InputNombre } from './components/InputNombre'
-import { FormularioAlumno } from './components/FormularioAlumno'
-import Login from './components/Login'
-import { InfoAdmin } from './components/InfoAdmin'
-import { alumnosService } from './services/alumnosService' // 👈 IMPORTAR EL SERVICIO
+import './App.css' // importo los estilos generales
+import { SelectorPromocion } from './components/SelectorPromocion' // componente para seleccionar promoción
+import { ListaAlumnos } from './components/ListaAlumnos' // componente que muestra la lista de alumnos
+import { useState, useEffect } from 'react' // hooks de React
+import { InputNombre } from './components/InputNombre' // input para filtrar por nombre
+import { FormularioAlumno } from './components/FormularioAlumno' // formulario para crear o editar alumno
+import Login from './components/Login' // pantalla de login
+import { InfoAdmin } from './components/InfoAdmin' // header con info del usuario logueado
+import { alumnosService } from './services/alumnosService' // funciones para interactuar con la API de alumnos
 
 export default function App(){
 
-  // --- DATOS INICIALES ---
-  const datosPromos = ["24/25", "25/26"]
+  const datosPromos = ["24/25", "25/26"] // promociones disponibles para filtros
 
-  // --- ESTADOS DE AUTENTICACIÓN ---
-  const [usuarioLogueado, setUsuarioLogueado] = useState(false)
-  const [esAdmin, setEsAdmin] = useState(false)
-  const [nombreUsuario, setNombreUsuario] = useState("")
+  const [usuarioLogueado, setUsuarioLogueado] = useState(false) // si hay un usuario logueado
+  const [esAdmin, setEsAdmin] = useState(false) // si el usuario es administrador
+  const [nombreUsuario, setNombreUsuario] = useState("") // nombre del usuario logueado
 
-  // --- ESTADOS DE FILTROS ---
-  const [nombre, setNombre] = useState("")
-  const [promocion, setPromocion] = useState("")
+  const [nombre, setNombre] = useState("") // filtro por nombre
+  const [promocion, setPromocion] = useState("") // filtro por promoción
 
-  // --- ESTADOS DE ALUMNOS (CRUD) ---
-  const [datosAlumno, setDatosAlumno] = useState([])
-  
-  // 👇 NUEVOS ESTADOS PARA MANEJAR CARGA Y ERRORES
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [datosAlumno, setDatosAlumno] = useState([]) // lista de alumnos traídos de la API
+  const [loading, setLoading] = useState(true) // indica si se está cargando información
+  const [error, setError] = useState(null) // mensaje de error si algo falla
 
-  // --- ESTADOS DEL FORMULARIO ---
-  const [formularioAbierto, setFormularioAbierto] = useState(false)
-  const [alumnoEditando, setAlumnoEditando] = useState(null)
+  const [formularioAbierto, setFormularioAbierto] = useState(false) // controla si se muestra el formulario
+  const [alumnoEditando, setAlumnoEditando] = useState(null) // alumno que se está editando
 
-  // --- EFECTO: Cargar autenticación desde localStorage al iniciar ---
   useEffect(() => {
-    const authData = localStorage.getItem('authData')
+    const authData = localStorage.getItem('authData') // leo la info de login guardada
     if (authData) {
       const { usuarioLogueado, esAdmin, nombreUsuario } = JSON.parse(authData)
-      setUsuarioLogueado(usuarioLogueado)
-      setEsAdmin(esAdmin)
-      setNombreUsuario(nombreUsuario)
+      setUsuarioLogueado(usuarioLogueado) // actualizo estado de login
+      setEsAdmin(esAdmin) // actualizo rol de usuario
+      setNombreUsuario(nombreUsuario) // actualizo nombre
     }
-  }, [])
+  }, []) // se ejecuta solo al montar la app
 
-  // --- EFECTO: Cargar alumnos desde la API al iniciar ---
-  // 👇 REEMPLAZAR ESTE useEffect COMPLETO
   useEffect(() => {
     if (usuarioLogueado) {
-      cargarAlumnos()
+      cargarAlumnos() // traigo los alumnos si hay usuario logueado
     }
-  }, [usuarioLogueado])
+  }, [usuarioLogueado]) // se ejecuta cada vez que cambia el login
 
-  // 👇 NUEVA FUNCIÓN PARA CARGAR ALUMNOS DESDE LA API
   const cargarAlumnos = async () => {
     try {
-      setLoading(true)
-      setError(null)
-      const alumnos = await alumnosService.obtenerTodos()
-      setDatosAlumno(alumnos)
+      setLoading(true) // activo spinner de carga
+      setError(null) // limpio errores previos
+      const alumnos = await alumnosService.obtenerTodos() // llamo a la API
+      setDatosAlumno(alumnos) // guardo los alumnos en el estado
     } catch (err) {
-      setError('Error al cargar los alumnos. Por favor, intenta de nuevo.')
+      setError('Error al cargar los alumnos. Por favor, intenta de nuevo.') // muestro error
       console.error('Error al cargar alumnos:', err)
     } finally {
-      setLoading(false)
+      setLoading(false) // desactivo spinner
     }
   }
 
-  // 👇 ELIMINAR ESTOS useEffect QUE GUARDABAN EN LOCALSTORAGE
-  // useEffect(() => {
-  //   if (datosAlumno.length > 0) {
-  //     localStorage.setItem('alumnos', JSON.stringify(datosAlumno))
-  //   }
-  // }, [datosAlumno])
-
-  // --- EFECTO: Guardar autenticación en localStorage cada vez que cambia ---
   useEffect(() => {
-    const authData = {
-      usuarioLogueado,
-      esAdmin,
-      nombreUsuario
-    }
-    localStorage.setItem('authData', JSON.stringify(authData))
-  }, [usuarioLogueado, esAdmin, nombreUsuario])
+    const authData = { usuarioLogueado, esAdmin, nombreUsuario } 
+    localStorage.setItem('authData', JSON.stringify(authData)) // guardo login en localStorage
+  }, [usuarioLogueado, esAdmin, nombreUsuario]) // cada vez que cambian estos estados
 
-  // --- FUNCIÓN: Manejar login exitoso ---
   const handleLogin = (userData) => {
-    setUsuarioLogueado(true)
-    setEsAdmin(userData.esAdmin)
-    setNombreUsuario(userData.username)
+    setUsuarioLogueado(true) // marco como logueado
+    setEsAdmin(userData.esAdmin) // guardo si es admin
+    setNombreUsuario(userData.username) // guardo el nombre
   }
 
-  // --- FUNCIÓN: Manejar logout ---
   const handleLogout = () => {
-    setUsuarioLogueado(false)
-    setEsAdmin(false)
-    setNombreUsuario("")
-    localStorage.removeItem('authData')
+    setUsuarioLogueado(false) // marco como deslogueado
+    setEsAdmin(false) // quito rol de admin
+    setNombreUsuario("") // limpio nombre
+    localStorage.removeItem('authData') // borro login del localStorage
   }
 
-  // 👇 MODIFICAR FUNCIÓN CREAR ALUMNO
   const crearAlumno = async (nuevoAlumno) => {
-  try {
-    setError(null)
-  
-    // NO añadas el id aquí, MongoDB lo genera automáticamente como _id
-    const alumnoCreado = await alumnosService.crear(nuevoAlumno)
-    setDatosAlumno([...datosAlumno, alumnoCreado])
-    setFormularioAbierto(false)
-  } catch (err) {
-    setError('Error al crear el alumno. Por favor, intenta de nuevo.')
-    console.error('Error al crear alumno:', err)
+    try {
+      setError(null) // limpio errores
+      const alumnoCreado = await alumnosService.crear(nuevoAlumno) // llamo a la API para crear
+      setDatosAlumno([...datosAlumno, alumnoCreado]) // agrego alumno nuevo al estado
+      setFormularioAbierto(false) // cierro formulario
+    } catch (err) {
+      setError('Error al crear el alumno. Por favor, intenta de nuevo.') // muestro error
+      console.error('Error al crear alumno:', err)
+    }
   }
-}
 
-  // 👇 MODIFICAR FUNCIÓN EDITAR ALUMNO
+
+  //en este caso, como en mongo db no es id a secas, le ponesmos _id para que tenga el mismo formato y se pueda editar bien los alumnos
+
   const editarAlumno = async (alumnoEditado) => {
-  try {
-    setError(null)
-    // MongoDB usa _id
-    const id = alumnoEditado._id
-    const alumnoActualizado = await alumnosService.actualizar(id, alumnoEditado)
-    
-    setDatosAlumno(
-      datosAlumno.map(alumno => 
-        alumno._id === id ? alumnoActualizado : alumno
-      )
-    )
-    setFormularioAbierto(false)
-    setAlumnoEditando(null)
-  } catch (err) {
-    setError('Error al editar el alumno. Por favor, intenta de nuevo.')
-    console.error('Error al editar alumno:', err)
-  }
-}
-
-  // 👇 MODIFICAR FUNCIÓN ELIMINAR ALUMNO
-  const eliminarAlumno = async (id) => {
-  if (window.confirm('¿Estás seguro de que quieres eliminar este alumno?')) {
     try {
       setError(null)
-      await alumnosService.eliminar(id)
-      setDatosAlumno(datosAlumno.filter(alumno => alumno._id !== id))
+      const id = alumnoEditado._id // tomo el id del alumno
+      const alumnoActualizado = await alumnosService.actualizar(id, alumnoEditado) // llamo a la API
+      setDatosAlumno(
+        datosAlumno.map(alumno => 
+          alumno._id === id ? alumnoActualizado : alumno // reemplazo el alumno editado
+        )
+      )
+      setFormularioAbierto(false) // cierro formulario
+      setAlumnoEditando(null) // limpio estado de edición
     } catch (err) {
-      setError('Error al eliminar el alumno. Por favor, intenta de nuevo.')
-      console.error('Error al eliminar alumno:', err)
+      setError('Error al editar el alumno. Por favor, intenta de nuevo.')
+      console.error('Error al editar alumno:', err)
     }
   }
-}
+
+  const eliminarAlumno = async (id) => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este alumno?')) { // confirmacion
+      try {
+        setError(null)
+        await alumnosService.eliminar(id) // llamo a la API para eliminar
+        setDatosAlumno(datosAlumno.filter(alumno => alumno._id !== id)) // actualizo estado
+      } catch (err) {
+        setError('Error al eliminar el alumno. Por favor, intenta de nuevo.')
+        console.error('Error al eliminar alumno:', err)
+      }
+    }
+  }
 
   const abrirFormularioCrear = () => {
-    setAlumnoEditando(null)
-    setFormularioAbierto(true)
+    setAlumnoEditando(null) // limpio cualquier alumno previo
+    setFormularioAbierto(true) // abro formulario
   }
 
   const abrirFormularioEditar = (alumno) => {
-    setAlumnoEditando(alumno)
-    setFormularioAbierto(true)
+    setAlumnoEditando(alumno) // pongo el alumno a editar
+    setFormularioAbierto(true) // abro formulario
   }
 
   const cerrarFormulario = () => {
-    setFormularioAbierto(false)
-    setAlumnoEditando(null)
+    setFormularioAbierto(false) // cierro formulario
+    setAlumnoEditando(null) // limpio alumno editando
   }
 
-  // --- FILTRADO DE ALUMNOS (mantener igual) ---
-  const datosFiltrados = datosAlumno.filter((d) => {
-    let okP = (d.promocion === promocion || promocion === "")
-    let okN = (d.nombre.toLowerCase().includes(nombre.toLowerCase()) || nombre === "")
+  const datosFiltrados = datosAlumno.filter((d) => { 
+    let okP = (d.promocion === promocion || promocion === "") // filtro por promoción
+    let okN = (d.nombre.toLowerCase().includes(nombre.toLowerCase()) || nombre === "") // filtro por nombre
     return okP && okN  
   })
 
-  // --- RENDERIZADO CONDICIONAL: Si no está logueado, mostrar Login ---
-  if (!usuarioLogueado) {
+  if (!usuarioLogueado) { // si no esta logueado, muestro login
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <Login onLogin={handleLogin} />
@@ -180,8 +149,7 @@ export default function App(){
     )
   }
 
-  // 👇 AGREGAR ESTADO DE CARGA
-  if (loading) {
+  if (loading) { // muestro spinner mientras carga
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
         <div className="text-center">
@@ -192,10 +160,8 @@ export default function App(){
     )
   }
 
-  // --- RENDERIZADO PRINCIPAL: Dashboard de alumnos ---
   return(
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-      {/* Header con información de usuario */}
       <div className="bg-white shadow-lg border-b-2 border-gray-200">
         <div className="container mx-auto px-4 py-5">
           <InfoAdmin 
@@ -206,16 +172,13 @@ export default function App(){
         </div>
       </div>
 
-      {/* Contenedor principal */}
       <div className="container mx-auto px-4 py-8">
-        
-        {/* 👇 MOSTRAR ERRORES SI EXISTEN */}
-        {error && (
+        {error && ( // muestro mensaje de error si hay
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
             <strong className="font-bold">Error: </strong>
             <span className="block sm:inline">{error}</span>
             <button 
-              onClick={() => setError(null)}
+              onClick={() => setError(null)} // cierro el mensaje
               className="absolute top-0 bottom-0 right-0 px-4 py-3"
             >
               <span className="text-2xl">&times;</span>
@@ -225,7 +188,6 @@ export default function App(){
         
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-5">🔍 Filtros de búsqueda</h2>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -251,7 +213,7 @@ export default function App(){
           </div>
         </div>
 
-        {esAdmin && (
+        {esAdmin && ( // botón para añadir alumno si es admin
           <div className="mb-6 flex justify-end">
             <button
               onClick={abrirFormularioCrear}
@@ -266,25 +228,25 @@ export default function App(){
           <h2 className="text-2xl font-bold text-gray-900 mb-5 flex items-center gap-2">
             👥 Lista de Alumnos 
             <span className="bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
-              {datosFiltrados.length}
+              {datosFiltrados.length} // número de alumnos filtrados
             </span>
           </h2>
           <ListaAlumnos 
-            datosAlumno={datosFiltrados}
-            esAdmin={esAdmin}
-            onEdit={abrirFormularioEditar}
-            onDelete={eliminarAlumno}
+            datosAlumno={datosFiltrados} 
+            esAdmin={esAdmin} 
+            onEdit={abrirFormularioEditar} 
+            onDelete={eliminarAlumno} 
           />
         </div>
       </div>
 
-      {formularioAbierto && (
+      {formularioAbierto && ( // muestro formulario si está abierto
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-300">
             <FormularioAlumno
-              alumno={alumnoEditando}
-              onSubmit={alumnoEditando ? editarAlumno : crearAlumno}
-              onCancel={cerrarFormulario}
+              alumno={alumnoEditando} // paso alumno si estoy editando
+              onSubmit={alumnoEditando ? editarAlumno : crearAlumno} // si hay alumno, edito, si no creo
+              onCancel={cerrarFormulario} // cerrar formulario
             />
           </div>
         </div>
