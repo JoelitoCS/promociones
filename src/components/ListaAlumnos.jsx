@@ -1,4 +1,7 @@
+import { Alumno } from "./Alumno"
+
 export function ListaAlumnos(props) {
+
   if (!props.datosAlumno || props.datosAlumno.length === 0) {
     return (
       <div className="text-center py-12">
@@ -20,11 +23,11 @@ export function ListaAlumnos(props) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {props.datosAlumno.map((alumno) => (
         <Alumno
-          key={alumno.id}
+          key={alumno._id}
           alumno={alumno}
           esAdmin={props.esAdmin}
-          onEdit={props.onEdit}
-          onDelete={props.onDelete}
+          onEdit={() => props.onEdit(alumno)}
+          onDelete={() => props.onDelete(alumno._id)}
         />
       ))}
     </div>

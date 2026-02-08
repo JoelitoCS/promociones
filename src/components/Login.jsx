@@ -20,10 +20,10 @@ export default function Login({ onLogin }) {
   }
 
   /**
-   * Maneja el envío del formulario de login
+   * Maneja el envio del formulario de login
    */
   const handleSubmit = (e) => {
-    e.preventDefault() // Prevenir recarga de página
+    e.preventDefault() // Preveiene recarga de pagina
     
     // Limpiar mensaje de error anterior
     setError('')
@@ -36,19 +36,15 @@ export default function Login({ onLogin }) {
 
     // Verificar si es admin
     if (usuario === adminCredenciales.username && password === adminCredenciales.password) {
-      onLogin({
-        username: usuario,
-        esAdmin: true
-      })
+
+      onLogin({username: usuario, esAdmin: true})
       return
     }
 
     // Verificar si es usuario normal
     if (usuario === userCredenciales.username && password === userCredenciales.password) {
-      onLogin({
-        username: usuario,
-        esAdmin: false
-      })
+
+      onLogin({username: usuario,esAdmin: false})
       return
     }
 
@@ -84,12 +80,7 @@ export default function Login({ onLogin }) {
             <label htmlFor="usuario" className="block text-gray-700 font-semibold mb-2">
               Usuario
             </label>
-            <input
-              id="usuario"
-              type="text"
-              placeholder="Introduce tu usuario"
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
+            <input id="usuario" type="text" placeholder="Introduce tu usuario" value={usuario} onChange={(e) => setUsuario(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               autoComplete="username"
             />
@@ -100,20 +91,14 @@ export default function Login({ onLogin }) {
             <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
               Contraseña
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Introduce tu contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+            <input id="password" type="password" placeholder="Introduce tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               autoComplete="current-password"
             />
           </div>
 
           {/* Botón de submit */}
-          <button
-            type="submit"
+          <button type="submit"
             className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
           >
             Iniciar Sesión

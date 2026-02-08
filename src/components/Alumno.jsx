@@ -1,36 +1,20 @@
-/**
- * Componente Alumno - Muestra la información de un alumno individual
- * 
- * Características:
- * - Muestra avatar, nombre, apellido, promoción y ciclo
- * - Iconos de editar y eliminar (solo visibles para admins)
- * 
- * Props:
- * @param {Object} alumno - Objeto con los datos del alumno
- * @param {boolean} esAdmin - Indica si el usuario es administrador
- * @param {Function} onEdit - Callback que se ejecuta al hacer clic en editar
- * @param {Function} onDelete - Callback que se ejecuta al hacer clic en eliminar
- */
+import { Avatar } from './Avatar'
+
+
 export function Alumno({ alumno, esAdmin, onEdit, onDelete }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6">
       <div className="flex items-start gap-4">
         {/* Avatar del alumno */}
         <div className="flex-shrink-0">
-          <img
-            src={alumno.imagen}
-            alt={`${alumno.nombre} ${alumno.apellido}`}
-            className="w-20 h-20 rounded-full object-cover border-4 border-blue-100"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/150?text=Sin+Imagen'
-            }}
-          />
+          <Avatar imagen={alumno.urlImagen} />
+          
         </div>
 
         {/* Información del alumno */}
         <div className="flex-grow">
           <h3 className="text-xl font-bold text-gray-800 mb-1">
-            {alumno.nombre} {alumno.apellido}
+            {alumno.nombre} {alumno.apellidos}
           </h3>
           
           <div className="space-y-1">
@@ -55,7 +39,7 @@ export function Alumno({ alumno, esAdmin, onEdit, onDelete }) {
           <div className="flex flex-col gap-2">
             {/* Botón de editar */}
             <button
-              onClick={() => onEdit(alumno)}
+              onClick={onEdit}
               className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition duration-300 shadow-md hover:shadow-lg"
               title="Editar alumno"
             >
@@ -66,7 +50,7 @@ export function Alumno({ alumno, esAdmin, onEdit, onDelete }) {
 
             {/* Botón de eliminar */}
             <button
-              onClick={() => onDelete(alumno.id)}
+              onClick={onDelete}
               className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-300 shadow-md hover:shadow-lg"
               title="Eliminar alumno"
             >
